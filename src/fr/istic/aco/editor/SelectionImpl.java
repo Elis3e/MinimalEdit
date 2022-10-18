@@ -15,7 +15,6 @@ public class SelectionImpl implements Selection {
 		this.endIndex = BUFFER_BEGIN_INDEX;
 	}
 
-	// TODO pre 0 <= beginIndex < endIndex <= buffer.length()
 	@Override
 	public int getBeginIndex() {
 		return this.beginIndex;
