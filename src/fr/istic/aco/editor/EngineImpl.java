@@ -4,7 +4,7 @@ public class EngineImpl implements Engine {
 
 	private StringBuilder buffer;
 
-	private SelectionImpl selection;
+	private Selection selection;
 
 	private String clipboard;
 
