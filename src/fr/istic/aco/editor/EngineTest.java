@@ -11,14 +11,14 @@ class EngineTest {
 
 	private Engine engine;
 
-	private StringBuilder buffer;
+	private String bufferContent;
 
 	@org.junit.jupiter.api.BeforeEach
 	void setUp() {
 		initEngine = new EngineImpl();
 
-		buffer = new StringBuilder("abcdef");
-		engine = new EngineImpl(buffer, "ghi");
+		bufferContent = "abcdef";
+		engine = new EngineImpl(bufferContent, "ghi");
 		engine.getSelection().setBeginIndex(0);
 		engine.getSelection().setEndIndex(3);
 	}
@@ -26,9 +26,13 @@ class EngineTest {
 	@Test
 	@DisplayName("Buffer must be empty after initialisation")
 	void getSelection() {
-		Selection selection = engine.getSelection();
+		Selection selection = initEngine.getSelection();
 		assertEquals(selection.getBufferBeginIndex(), selection.getBeginIndex());
 		assertEquals("", initEngine.getBufferContents());
+
+		initEngine.insert(bufferContent);
+		assertEquals(6, initEngine.getSelection().getBeginIndex());
+		assertEquals(6, initEngine.getSelection().getEndIndex());
 	}
 
 	@Test
