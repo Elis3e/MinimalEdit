@@ -10,25 +10,18 @@ public class SelectionImpl implements Selection {
 
 	public SelectionImpl(StringBuilder buffer, Integer beginIndex, Integer endIndex) {
 		this.buffer = buffer;
-		this.beginIndex = BUFFER_BEGIN_INDEX;
+		this.beginIndex = beginIndex;
 		this.endIndex = endIndex;
 	}
 
-	public SelectionImpl() {
-		this.buffer = new StringBuilder();
+	public SelectionImpl(StringBuilder buffer) {
+		this.buffer = buffer;
 		this.beginIndex = BUFFER_BEGIN_INDEX;
 		this.beginIndex = BUFFER_BEGIN_INDEX;
 		this.endIndex = BUFFER_BEGIN_INDEX;
 	}
 
-	public StringBuilder getBuffer() {
-		return buffer;
-	}
-
-	public void setBuffer(StringBuilder buffer) {
-		this.buffer = buffer;
-	}
-
+	// TODO pre 0 <= beginIndex < endIndex <= buffer.length()
 	@Override
 	public int getBeginIndex() {
 		return this.beginIndex;
@@ -46,7 +39,7 @@ public class SelectionImpl implements Selection {
 
 	@Override
 	public int getBufferEndIndex() {
-		return buffer.capacity();
+		return buffer.length();
 	}
 
 	@Override

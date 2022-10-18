@@ -7,46 +7,62 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EngineTest {
 
-    private Engine engine;
+	private Engine initEngine;
 
-    @org.junit.jupiter.api.BeforeEach
-    void setUp() {
-        engine = new EngineImpl();
-    }
+	private Engine engine;
 
-    private void todo() {
-        fail("Unimplemented test");
-    }
-    @Test
-    @DisplayName("Buffer must be empty after initialisation")
-    void getSelection() {
-        Selection selection = engine.getSelection();
-        assertEquals(selection.getBufferBeginIndex(),selection.getBeginIndex());
-        assertEquals("",engine.getBufferContents());
-    }
+	private StringBuilder buffer;
 
-    @Test
-    void getBufferContents() {
-        todo();
-    }
+	@org.junit.jupiter.api.BeforeEach
+	void setUp() {
+		initEngine = new EngineImpl();
 
-    @Test
-    void getClipboardContents() {
-        todo();
-    }
+		buffer = new StringBuilder("abcdef");
+		engine = new EngineImpl(buffer, "ghi");
+		engine.getSelection().setBeginIndex(0);
+		engine.getSelection().setEndIndex(3);
+	}
 
-    @Test
-    void cutSelectedText() {
-        todo();
-    }
+	@Test
+	@DisplayName("Buffer must be empty after initialisation")
+	void getSelection() {
+		Selection selection = engine.getSelection();
+		assertEquals(selection.getBufferBeginIndex(), selection.getBeginIndex());
+		assertEquals("", initEngine.getBufferContents());
+	}
 
-    @Test
-    void copySelectedText() {
-        todo();
-    }
+	@Test
+	void getBufferContents() {
+		assertEquals("abcdef", engine.getBufferContents());
+	}
 
-    @Test
-    void pasteClipboard() {
-        todo();
-    }
+	@Test
+	void getClipboardContents() {
+		assertEquals("ghi", engine.getClipboardContents());
+	}
+
+	@Test
+	void cutSelectedText() {
+		assertEquals("ghi", engine.getClipboardContents());
+		engine.cutSelectedText();
+		assertEquals("def", engine.getBufferContents());
+		assertEquals("abc", engine.getClipboardContents());
+
+	}
+
+	@Test
+	void copySelectedText() {
+		assertEquals("ghi", engine.getClipboardContents());
+		engine.copySelectedText();
+		assertEquals("abcdef", engine.getBufferContents());
+		assertEquals("abc", engine.getClipboardContents());
+	}
+
+	@Test
+	void pasteClipboard() {
+		engine.getSelection().setBeginIndex(6);
+		engine.getSelection().setEndIndex(6);
+		engine.pasteClipboard();
+		assertEquals("abcdefghi", engine.getBufferContents());
+	}
 }

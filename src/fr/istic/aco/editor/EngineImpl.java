@@ -2,17 +2,27 @@ package fr.istic.aco.editor;
 
 public class EngineImpl implements Engine {
 
+	private StringBuilder buffer;
+
 	private SelectionImpl selection;
 
 	private String clipboard;
 
-	public EngineImpl(SelectionImpl selection, String clipboard) {
-		this.selection = selection;
+	public EngineImpl(StringBuilder buffer, String clipboard) {
+		this.buffer = buffer;
 		this.clipboard = clipboard;
+		this.selection = new SelectionImpl(buffer);
+	}
+
+	public EngineImpl(StringBuilder buffer) {
+		this.buffer = buffer;
+		this.selection = new SelectionImpl(buffer);
 	}
 
 	public EngineImpl() {
-		this.selection = new SelectionImpl();
+		this.buffer = new StringBuilder();
+		this.clipboard = new String();
+		this.selection = new SelectionImpl(buffer);
 	}
 
 	/**
@@ -32,7 +42,7 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public String getBufferContents() {
-		return this.selection.getBuffer().toString();
+		return this.buffer.toString();
 	}
 
 	/**
@@ -42,7 +52,7 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public String getClipboardContents() {
-		return this.clipboard;
+		return new String(this.clipboard);
 	}
 
 	/**
@@ -51,6 +61,7 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public void cutSelectedText() {
+		this.copySelectedText();
 		this.delete();
 	}
 
@@ -62,8 +73,7 @@ public class EngineImpl implements Engine {
 	public void copySelectedText() {
 		Integer beginIndex = getSelection().getBeginIndex();
 		Integer endIndex = getSelection().getEndIndex();
-		StringBuilder buffer = this.selection.getBuffer();
-		this.clipboard = buffer.substring(beginIndex, endIndex);
+		this.clipboard = this.buffer.substring(beginIndex, endIndex);
 	}
 
 	/**
@@ -84,8 +94,7 @@ public class EngineImpl implements Engine {
 	public void insert(String s) {
 		Integer beginIndex = getSelection().getBeginIndex();
 		Integer endIndex = getSelection().getEndIndex();
-		StringBuilder buffer = this.selection.getBuffer();
-		buffer.replace(beginIndex, endIndex, s);
+		this.buffer.replace(beginIndex, endIndex, s);
 	}
 
 	/**
@@ -95,7 +104,6 @@ public class EngineImpl implements Engine {
 	public void delete() {
 		Integer beginIndex = getSelection().getBeginIndex();
 		Integer endIndex = getSelection().getEndIndex();
-		StringBuilder buffer = this.selection.getBuffer();
-		buffer.delete(beginIndex, endIndex);
+		this.buffer.delete(beginIndex, endIndex);
 	}
 }
