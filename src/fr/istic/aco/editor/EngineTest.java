@@ -47,7 +47,8 @@ class EngineTest {
 		engine.cutSelectedText();
 		assertEquals("def", engine.getBufferContents());
 		assertEquals("abc", engine.getClipboardContents());
-
+		assertEquals(0, engine.getSelection().getBeginIndex());
+		assertEquals(0, engine.getSelection().getEndIndex());
 	}
 
 	@Test
@@ -64,5 +65,7 @@ class EngineTest {
 		engine.getSelection().setEndIndex(6);
 		engine.pasteClipboard();
 		assertEquals("abcdefghi", engine.getBufferContents());
+		assertEquals(9, engine.getSelection().getBeginIndex());
+		assertEquals(9, engine.getSelection().getEndIndex());
 	}
 }

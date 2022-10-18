@@ -4,18 +4,13 @@ public class EngineImpl implements Engine {
 
 	private StringBuilder buffer;
 
-	private SelectionImpl selection;
+	private Selection selection;
 
 	private String clipboard;
 
 	public EngineImpl(StringBuilder buffer, String clipboard) {
 		this.buffer = buffer;
 		this.clipboard = clipboard;
-		this.selection = new SelectionImpl(buffer);
-	}
-
-	public EngineImpl(StringBuilder buffer) {
-		this.buffer = buffer;
 		this.selection = new SelectionImpl(buffer);
 	}
 
@@ -52,7 +47,7 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public String getClipboardContents() {
-		return new String(this.clipboard);
+		return this.clipboard;
 	}
 
 	/**
@@ -63,6 +58,7 @@ public class EngineImpl implements Engine {
 	public void cutSelectedText() {
 		this.copySelectedText();
 		this.delete();
+		this.getSelection().setEndIndex(this.getSelection().getBeginIndex());
 	}
 
 	/**
@@ -83,6 +79,8 @@ public class EngineImpl implements Engine {
 	@Override
 	public void pasteClipboard() {
 		this.insert(clipboard);
+		this.getSelection().setEndIndex(this.getSelection().getBufferEndIndex());
+		this.getSelection().setBeginIndex(this.getSelection().getBufferEndIndex());
 	}
 
 	/**
