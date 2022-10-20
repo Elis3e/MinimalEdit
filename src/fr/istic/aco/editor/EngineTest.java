@@ -31,8 +31,17 @@ class EngineTest {
 		assertEquals("", initEngine.getBufferContents());
 
 		initEngine.insert(bufferContent);
-		assertEquals(6, initEngine.getSelection().getBeginIndex());
-		assertEquals(6, initEngine.getSelection().getEndIndex());
+		assertEquals(6, selection.getBeginIndex());
+		assertEquals(6, selection.getEndIndex());
+
+		selection.setBeginIndex(2);
+		selection.setEndIndex(3);
+
+		assertThrows(IndexOutOfBoundsException.class, () -> selection.setEndIndex(1));
+		assertThrows(IndexOutOfBoundsException.class, () -> selection.setEndIndex(100));
+
+		assertThrows(IndexOutOfBoundsException.class, () -> selection.setBeginIndex(4));
+		assertThrows(IndexOutOfBoundsException.class, () -> selection.setBeginIndex(-1));
 	}
 
 	@Test
@@ -65,9 +74,10 @@ class EngineTest {
 
 	@Test
 	void pasteClipboard() {
-		engine.getSelection().setBeginIndex(6);
 		engine.getSelection().setEndIndex(6);
+		engine.getSelection().setBeginIndex(6);
 		engine.pasteClipboard();
+		
 		assertEquals("abcdefghi", engine.getBufferContents());
 		assertEquals(9, engine.getSelection().getBeginIndex());
 		assertEquals(9, engine.getSelection().getEndIndex());
