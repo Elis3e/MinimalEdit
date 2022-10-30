@@ -1,6 +1,7 @@
 package fr.istic.aco.editor;
 
 import org.junit.jupiter.api.DisplayName;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,21 +19,21 @@ class EngineTest {
 		initEngine = new EngineImpl();
 
 		bufferContent = "abcdef";
-		engine = new EngineImpl(bufferContent, "ghi");
+		engine = new EngineImpl(bufferContent);
 		engine.getSelection().setBeginIndex(0);
 		engine.getSelection().setEndIndex(3);
 	}
 
 	@Test
 	@DisplayName("Buffer must be empty after initialisation")
-	void getSelection() {
-		Selection selection = initEngine.getSelection();
-		assertEquals(selection.getBufferBeginIndex(), selection.getBeginIndex());
+	void BufferMustbeEmptyAfterInitialization() {
+		//Selection selection = initEngine.getSelection();
+		//assertEquals(selection.getBufferBeginIndex(), selection.getBeginIndex());
 		assertEquals("", initEngine.getBufferContents());
 
-		initEngine.insert(bufferContent);
-		assertEquals(6, initEngine.getSelection().getBeginIndex());
-		assertEquals(6, initEngine.getSelection().getEndIndex());
+//		initEngine.insert(bufferContent);
+//		assertEquals(6, initEngine.getSelection().getBeginIndex());
+//		assertEquals(6, initEngine.getSelection().getEndIndex());
 	}
 
 	@Test
@@ -42,7 +43,7 @@ class EngineTest {
 
 	@Test
 	void getClipboardContents() {
-		assertEquals("ghi", engine.getClipboardContents());
+		assertEquals("", engine.getClipboardContents());
 	}
 
 	@Test

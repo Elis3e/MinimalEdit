@@ -8,14 +8,13 @@ public class EngineImpl implements Engine {
 
 	private String clipboard;
 
-	public EngineImpl(String bufferContent, String clipboard) {
+	public EngineImpl(String bufferContent) {
 		this.buffer = new StringBuilder(bufferContent);
-		this.clipboard = clipboard;
+		this.clipboard = "";
 		this.selection = new SelectionImpl(buffer);
 	}
 
 	public EngineImpl() {
-		this.buffer = new StringBuilder();
 		this.clipboard = new String();
 		this.selection = new SelectionImpl(buffer);
 	}
@@ -82,17 +81,19 @@ public class EngineImpl implements Engine {
 	}
 
 	/**
-	 * Inserts a string in the buffer, which replaces the contents of the selection
+	 * Inserts a String in the buffer, which replaces the contents of the
+	 * selection
 	 *
 	 * @param s the text to insert
 	 */
 	@Override
 	public void insert(String s) {
-		Integer beginIndex = getSelection().getBeginIndex();
-		Integer endIndex = getSelection().getEndIndex();
+		Selection selection = this.getSelection();
+		Integer beginIndex = selection.getBeginIndex();
+		Integer endIndex = selection.getEndIndex();
 		this.buffer.replace(beginIndex, endIndex, s);
-		this.getSelection().setEndIndex(this.getSelection().getBufferEndIndex());
-		this.getSelection().setBeginIndex(this.getSelection().getBufferEndIndex());
+		selection.setEndIndex(beginIndex + s.length());
+		selection.setBeginIndex(selection.getEndIndex());
 	}
 
 	/**
