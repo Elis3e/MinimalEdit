@@ -8,15 +8,9 @@ public class EngineImpl implements Engine {
 
 	private String clipboard;
 
-	public EngineImpl(String bufferContent, String clipboard) {
-		this.buffer = new StringBuilder(bufferContent);
-		this.clipboard = clipboard;
-		this.selection = new SelectionImpl(buffer);
-	}
-
 	public EngineImpl() {
 		this.buffer = new StringBuilder();
-		this.clipboard = new String();
+		this.clipboard = "";
 		this.selection = new SelectionImpl(buffer);
 	}
 
@@ -58,7 +52,9 @@ public class EngineImpl implements Engine {
 	public void cutSelectedText() {
 		this.copySelectedText();
 		this.delete();
-		this.getSelection().setEndIndex(this.getSelection().getBeginIndex());
+		
+		Selection selection = this.getSelection();
+		selection.setEndIndex(selection.getBeginIndex());
 	}
 
 	/**
@@ -67,9 +63,9 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public void copySelectedText() {
-		Integer beginIndex = getSelection().getBeginIndex();
-		Integer endIndex = getSelection().getEndIndex();
-		this.clipboard = this.buffer.substring(beginIndex, endIndex);
+		Selection selection = getSelection();
+		
+		clipboard = buffer.substring(selection.getBeginIndex(), selection.getEndIndex());
 	}
 
 	/**
@@ -78,7 +74,7 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public void pasteClipboard() {
-		this.insert(clipboard);
+		this.insert(this.clipboard);
 	}
 
 	/**
@@ -88,11 +84,12 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public void insert(String s) {
-		Integer beginIndex = getSelection().getBeginIndex();
-		Integer endIndex = getSelection().getEndIndex();
-		this.buffer.replace(beginIndex, endIndex, s);
-		this.getSelection().setEndIndex(this.getSelection().getBufferEndIndex());
-		this.getSelection().setBeginIndex(this.getSelection().getBufferEndIndex());
+		Selection selection = getSelection();
+		
+		this.buffer.replace(selection.getBeginIndex(), selection.getEndIndex(), s);
+
+		selection.setEndIndex(selection.getBeginIndex() + s.length());
+		selection.setBeginIndex(selection.getEndIndex());
 	}
 
 	/**
@@ -100,8 +97,8 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public void delete() {
-		Integer beginIndex = getSelection().getBeginIndex();
-		Integer endIndex = getSelection().getEndIndex();
-		this.buffer.delete(beginIndex, endIndex);
+		Selection selection = getSelection();
+		
+		this.buffer.delete(selection.getBeginIndex(), selection.getEndIndex());
 	}
 }

@@ -52,7 +52,7 @@ public interface Selection {
      * Changes the value of the end index of the selection
      *
      * @param endIndex, must be within the buffer index range
-     * @throws IndexOutOfBoundsException if the beginIndex is out of bounds
+     * @throws IndexOutOfBoundsException if the endIndex is out of bounds
      */
     void setEndIndex(int endIndex);
 

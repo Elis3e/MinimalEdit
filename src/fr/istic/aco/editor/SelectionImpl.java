@@ -37,14 +37,14 @@ public class SelectionImpl implements Selection {
 
 	@Override
 	public void setBeginIndex(int beginIndex) {
-		if (beginIndex > this.getEndIndex() || beginIndex < this.getBufferBeginIndex())
+		if (beginIndex > this.endIndex || beginIndex < BUFFER_BEGIN_INDEX || beginIndex > getBufferEndIndex())
 			throw new IndexOutOfBoundsException();
 		this.beginIndex = beginIndex;
 	}
 
 	@Override
 	public void setEndIndex(int endIndex) {
-		if (this.getBeginIndex() > endIndex || this.getBufferEndIndex() < endIndex)
+		if (endIndex < this.beginIndex || endIndex > getBufferEndIndex() || endIndex < BUFFER_BEGIN_INDEX)
 			throw new IndexOutOfBoundsException();
 		this.endIndex = endIndex;
 	}
