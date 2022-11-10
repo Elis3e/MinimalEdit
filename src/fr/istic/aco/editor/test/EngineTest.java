@@ -9,6 +9,7 @@ import fr.istic.aco.editor.Selection;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+//
 class EngineTest {
 
 	private Engine engine;
@@ -39,12 +40,12 @@ class EngineTest {
 
 		engine.insert(bufferContent);
 
-		assertEquals(bufferContent.length(), selection.getBeginIndex());
-		assertEquals(bufferContent.length(), selection.getEndIndex());
+		assertEquals(19, selection.getBeginIndex());
+		assertEquals(19, selection.getEndIndex());
 	}
 
 	@Test
-	@DisplayName("The buffer contains the inserted text, after initialisation")
+	@DisplayName("The buffer contains the inserted text")
 	void getBufferContents() {
 		engine.insert(bufferContent);
 		assertEquals("Toto likes football", engine.getBufferContents());
@@ -66,7 +67,6 @@ class EngineTest {
 		// "foot" must be erased from the buffer
 		assertEquals("Toto likes ball", engine.getBufferContents());
 		assertEquals("foot", engine.getClipboardContents());
-
 	}
 
 	@Test
@@ -131,21 +131,35 @@ class EngineTest {
 	}
 
 	@Test
-	@DisplayName("Selection out of the buffer limits / Reversed indexes")
-	void index() throws IndexOutOfBoundsException {
+	@DisplayName("Selection out of the buffer bounds")
+	void indexOutOfBounds() throws IndexOutOfBoundsException {
 		Selection selection = engine.getSelection();
 
 		engine.insert(bufferContent);
-
-		selection.setBeginIndex(5);
-		selection.setEndIndex(10);
-
 		assertThrows(IndexOutOfBoundsException.class, () -> selection.setEndIndex(100));
 		assertThrows(IndexOutOfBoundsException.class, () -> selection.setEndIndex(-5));
-		assertThrows(IndexOutOfBoundsException.class, () -> selection.setEndIndex(1));
 
 		assertThrows(IndexOutOfBoundsException.class, () -> selection.setBeginIndex(100));
-		assertThrows(IndexOutOfBoundsException.class, () -> selection.setBeginIndex(-1));
-		assertThrows(IndexOutOfBoundsException.class, () -> selection.setBeginIndex(14));
+		assertThrows(IndexOutOfBoundsException.class, () -> selection.setBeginIndex(-17));
+	}
+	
+	@Test
+	@DisplayName("Selection with reversed indexes")
+	void reversedIndexes() {
+		Selection selection = engine.getSelection();
+		engine.insert(bufferContent);
+		
+		// Both indexes are in the end of buffers
+		// Move beginIndex before endIndex
+		selection.setBeginIndex(5);
+		selection.setEndIndex(5);
+
+		// EndIndex < current beginIndex = 5
+		selection.setEndIndex(3);
+		assertEquals(3, selection.getBeginIndex());
+		
+		// BeginIndex > current endIndex  = 5
+		selection.setBeginIndex(8);
+		assertEquals(8, selection.getEndIndex());
 	}
 }

@@ -2,7 +2,7 @@ package fr.istic.aco.editor;
 
 public class SelectionImpl implements Selection {
 
-	static final Integer BUFFER_BEGIN_INDEX = 0;
+	private static final Integer BUFFER_BEGIN_INDEX = 0;
 
 	private StringBuilder buffer;
 	private Integer beginIndex;
@@ -10,7 +10,6 @@ public class SelectionImpl implements Selection {
 
 	public SelectionImpl(StringBuilder buffer) {
 		this.buffer = buffer;
-		this.beginIndex = BUFFER_BEGIN_INDEX;
 		this.beginIndex = BUFFER_BEGIN_INDEX;
 		this.endIndex = BUFFER_BEGIN_INDEX;
 	}
@@ -37,16 +36,26 @@ public class SelectionImpl implements Selection {
 
 	@Override
 	public void setBeginIndex(int beginIndex) {
-		if (beginIndex > this.endIndex || beginIndex < BUFFER_BEGIN_INDEX || beginIndex > getBufferEndIndex())
+		if (beginIndex < BUFFER_BEGIN_INDEX || beginIndex > getBufferEndIndex())
 			throw new IndexOutOfBoundsException();
-		this.beginIndex = beginIndex;
+		if (beginIndex > this.endIndex) {
+			this.beginIndex = this.endIndex;
+			this.endIndex = beginIndex;
+		} else {
+			this.beginIndex = beginIndex;
+		}
 	}
 
 	@Override
 	public void setEndIndex(int endIndex) {
-		if (endIndex < this.beginIndex || endIndex > getBufferEndIndex() || endIndex < BUFFER_BEGIN_INDEX)
+		if (endIndex > getBufferEndIndex() || endIndex < BUFFER_BEGIN_INDEX)
 			throw new IndexOutOfBoundsException();
-		this.endIndex = endIndex;
+		if (endIndex < this.beginIndex) {
+			this.endIndex = this.beginIndex;
+			this.beginIndex = endIndex;
+		} else {
+			this.endIndex = endIndex;
+		}
 	}
 
 }
