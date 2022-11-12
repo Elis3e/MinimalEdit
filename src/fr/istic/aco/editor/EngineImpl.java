@@ -52,9 +52,8 @@ public class EngineImpl implements Engine {
 	public void cutSelectedText() {
 		this.copySelectedText();
 		this.delete();
-		
-		Selection selection = this.getSelection();
-		selection.setEndIndex(selection.getBeginIndex());
+		Selection currentSelection = this.getSelection();
+		currentSelection.setEndIndex(currentSelection.getBeginIndex());
 	}
 
 	/**
@@ -63,9 +62,8 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public void copySelectedText() {
-		Selection selection = getSelection();
-		
-		clipboard = buffer.substring(selection.getBeginIndex(), selection.getEndIndex());
+		Selection currentSelection = getSelection();
+		clipboard = buffer.substring(currentSelection.getBeginIndex(), currentSelection.getEndIndex());
 	}
 
 	/**
@@ -84,12 +82,12 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public void insert(String s) {
-		Selection selection = getSelection();
-		
-		this.buffer.replace(selection.getBeginIndex(), selection.getEndIndex(), s);
-
-		selection.setEndIndex(selection.getBeginIndex() + s.length());
-		selection.setBeginIndex(selection.getEndIndex());
+		if (s != null) {
+			Selection currentSelection = getSelection();
+			this.buffer.replace(currentSelection.getBeginIndex(), currentSelection.getEndIndex(), s);
+			currentSelection.setEndIndex(currentSelection.getBeginIndex() + s.length());
+			currentSelection.setBeginIndex(currentSelection.getEndIndex());
+		}
 	}
 
 	/**
@@ -97,8 +95,7 @@ public class EngineImpl implements Engine {
 	 */
 	@Override
 	public void delete() {
-		Selection selection = getSelection();
-		
-		this.buffer.delete(selection.getBeginIndex(), selection.getEndIndex());
+		Selection currentSelection = getSelection();
+		this.buffer.delete(currentSelection.getBeginIndex(), currentSelection.getEndIndex());
 	}
 }

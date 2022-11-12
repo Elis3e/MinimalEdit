@@ -9,17 +9,15 @@ import fr.istic.aco.editor.Selection;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//
 class EngineTest {
 
 	private Engine engine;
 
-	private String bufferContent;
+	private static final String BUFFER_CONTENT = "Toto likes football";
 
 	@org.junit.jupiter.api.BeforeEach
 	void setUp() {
 		engine = new EngineImpl();
-		bufferContent = "Toto likes football";
 	}
 
 	@Test
@@ -38,7 +36,7 @@ class EngineTest {
 	void insert() {
 		Selection selection = engine.getSelection();
 
-		engine.insert(bufferContent);
+		engine.insert(BUFFER_CONTENT);
 
 		assertEquals(19, selection.getBeginIndex());
 		assertEquals(19, selection.getEndIndex());
@@ -47,15 +45,15 @@ class EngineTest {
 	@Test
 	@DisplayName("The buffer contains the inserted text")
 	void getBufferContents() {
-		engine.insert(bufferContent);
-		assertEquals("Toto likes football", engine.getBufferContents());
+		engine.insert(BUFFER_CONTENT);
+		assertEquals(BUFFER_CONTENT, engine.getBufferContents());
 	}
 
 	@Test
 	@DisplayName("The cut text is erased from the buffer")
 	void cutSelectedText() {
 		Selection selection = engine.getSelection();
-		engine.insert(bufferContent);
+		engine.insert(BUFFER_CONTENT);
 
 		// select "foot" in "football"
 		selection.setBeginIndex(11);
@@ -73,7 +71,7 @@ class EngineTest {
 	@DisplayName("The buffer remains unchanged after a copy")
 	void copySelectedText() {
 		Selection selection = engine.getSelection();
-		engine.insert(bufferContent);
+		engine.insert(BUFFER_CONTENT);
 
 		// select "foot" in "football"
 		selection.setBeginIndex(11);
@@ -83,7 +81,7 @@ class EngineTest {
 		engine.copySelectedText();
 
 		// the buffer remains unchanged
-		assertEquals("Toto likes football", engine.getBufferContents());
+		assertEquals(BUFFER_CONTENT, engine.getBufferContents());
 		assertEquals("foot", engine.getClipboardContents());
 	}
 
@@ -91,7 +89,7 @@ class EngineTest {
 	@DisplayName("The text in the clipboard replaces the current selected text")
 	void pasteClipboard() {
 		Selection selection = engine.getSelection();
-		engine.insert(bufferContent + "basket");
+		engine.insert(BUFFER_CONTENT + "basket");
 		assertEquals("Toto likes footballbasket", engine.getBufferContents());
 
 		// select "basket"
@@ -117,7 +115,7 @@ class EngineTest {
 	@DisplayName("The current selected text appear in the clipboard after a copy")
 	void getClipboardContents() {
 		Selection selection = engine.getSelection();
-		engine.insert(bufferContent); // "Toto likes football"
+		engine.insert(BUFFER_CONTENT); // "Toto likes football"
 
 		// select the word "likes"
 		selection.setBeginIndex(5);
@@ -129,26 +127,42 @@ class EngineTest {
 		// verify if the copied word appear in the clipboard
 		assertEquals("likes", engine.getClipboardContents());
 	}
+	
+	@Test
+	@DisplayName("Delete has no effect when beginIndex equals to endIndex")
+	void delete() {
+		// delete has no effect on empty buffer (after initialisation)
+		engine.delete();
+		assertEquals("", engine.getBufferContents());
+		
+		// delete has no effect when beginIndex == endIndex
+		Selection selection = engine.getSelection();
+		engine.insert(BUFFER_CONTENT); // "Toto likes football"
+		selection.setBeginIndex(5);
+		selection.setEndIndex(5);
+		engine.delete();
+		assertEquals(BUFFER_CONTENT, engine.getBufferContents());	
+	}
 
 	@Test
 	@DisplayName("Selection out of the buffer bounds")
 	void indexOutOfBounds() throws IndexOutOfBoundsException {
 		Selection selection = engine.getSelection();
 
-		engine.insert(bufferContent);
+		engine.insert(BUFFER_CONTENT);
 		assertThrows(IndexOutOfBoundsException.class, () -> selection.setEndIndex(100));
 		assertThrows(IndexOutOfBoundsException.class, () -> selection.setEndIndex(-5));
 
 		assertThrows(IndexOutOfBoundsException.class, () -> selection.setBeginIndex(100));
 		assertThrows(IndexOutOfBoundsException.class, () -> selection.setBeginIndex(-17));
 	}
-	
+
 	@Test
 	@DisplayName("Selection with reversed indexes")
 	void reversedIndexes() {
 		Selection selection = engine.getSelection();
-		engine.insert(bufferContent);
-		
+		engine.insert(BUFFER_CONTENT);
+
 		// Both indexes are in the end of buffers
 		// Move beginIndex before endIndex
 		selection.setBeginIndex(5);
@@ -157,8 +171,8 @@ class EngineTest {
 		// EndIndex < current beginIndex = 5
 		selection.setEndIndex(3);
 		assertEquals(3, selection.getBeginIndex());
-		
-		// BeginIndex > current endIndex  = 5
+
+		// BeginIndex > current endIndex = 5
 		selection.setBeginIndex(8);
 		assertEquals(8, selection.getEndIndex());
 	}
