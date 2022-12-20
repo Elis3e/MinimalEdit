@@ -16,4 +16,7 @@ public class Command {
 	public static final String STOP = "stop";
 	public static final String REPLAY = "replay";
 
+	public static final String UNDO = "undo";
+	public static final String REDO = "redo";
+
 }

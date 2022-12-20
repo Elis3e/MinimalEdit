@@ -7,6 +7,7 @@ import fr.istic.aco.editor.*;
 import fr.istic.aco.editor.command.*;
 import fr.istic.aco.editor.recorder.Recorder;
 import fr.istic.aco.editor.recorder.RecorderImpl;
+import fr.istic.aco.editor.undomanager.UndoManager;
 import fr.istic.aco.editor.userinterface.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,6 +24,8 @@ public class CommandTest {
 
 	private Recorder recorder;
 
+	private UndoManager undoManager;
+
 	private String contentExample;
 
 	private void setReadStream(String s) {
@@ -36,12 +39,12 @@ public class CommandTest {
 		editor = new UserInterfaceImpl();
 		recorder = new RecorderImpl();
 
-		editor.addCommand(Command.INSERT, new Insert(engine, editor, recorder));
+		editor.addCommand(Command.INSERT, new Insert(engine, editor, recorder, undoManager));
 		editor.addCommand(Command.SELECT, new SelectionChange(engine, editor, recorder));
-		editor.addCommand(Command.CUT, new CutSelectedText(engine, recorder));
+		editor.addCommand(Command.CUT, new CutSelectedText(engine, recorder, undoManager));
 		editor.addCommand(Command.COPY, new CopySelectedText(engine, recorder));
-		editor.addCommand(Command.PASTE, new PasteClipboard(engine, recorder));
-		editor.addCommand(Command.DELETE, new Delete(engine, recorder));
+		editor.addCommand(Command.PASTE, new PasteClipboard(engine, recorder, undoManager));
+		editor.addCommand(Command.DELETE, new Delete(engine, recorder, undoManager));
 
 		contentExample = "Toto likes football";
 	}

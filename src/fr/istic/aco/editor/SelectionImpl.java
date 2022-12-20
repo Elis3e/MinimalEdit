@@ -62,10 +62,9 @@ public class SelectionImpl implements Selection {
 	 */
 	@Override
 	public void setBeginIndex(int newBeginIndex) {
-		if (beginIndex < BUFFER_BEGIN_INDEX || beginIndex > getBufferEndIndex())
+		if (newBeginIndex < BUFFER_BEGIN_INDEX || newBeginIndex > getBufferEndIndex())
 			throw new IndexOutOfBoundsException();
 		this.beginIndex = newBeginIndex;
-
 	}
 
 	/**
@@ -73,7 +72,7 @@ public class SelectionImpl implements Selection {
 	 */
 	@Override
 	public void setEndIndex(int newEndIndex) {
-		if (endIndex > getBufferEndIndex() || endIndex < BUFFER_BEGIN_INDEX)
+		if (newEndIndex > getBufferEndIndex() || newEndIndex < BUFFER_BEGIN_INDEX)
 			throw new IndexOutOfBoundsException();
 		this.endIndex = newEndIndex;
 	}

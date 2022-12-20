@@ -1,22 +1,24 @@
 package fr.istic.aco.editor.undomanager;
 
-import java.util.Optional;
-
-import fr.istic.aco.editor.command.CommandOriginator;
-import fr.istic.aco.editor.memento.Memento;
-import fr.istic.aco.editor.util.MyPairImpl;
-
 /**
+ * Provides acess to undo/redo operations.
  * 
  * @version 3.0
  */
 public interface UndoManager {
 
-	void store(Memento m);
+	/**
+	 * Save the mini text editor current state.
+	 */
+	void store();
 
-	void store(MyPairImpl<CommandOriginator, Optional<Memento>> m);
-
+	/**
+	 * Restore the mini text editor to a previous state.
+	 */
 	void undo();
 
+	/**
+	 * Restore the mini text editor to a later state.
+	 */
 	void redo();
 }

@@ -2,7 +2,6 @@ package fr.istic.aco.editor.recorder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import fr.istic.aco.editor.command.CommandOriginator;
 import fr.istic.aco.editor.memento.Memento;
@@ -20,7 +19,7 @@ public class RecorderImpl implements Recorder {
 
 	private boolean replaying;
 
-	private List<MyPairImpl<CommandOriginator, Optional<Memento>>> savedStates;
+	private List<MyPairImpl<CommandOriginator, Memento>> savedStates;
 
 	/**
 	 * Creates an empty recorder.
@@ -73,11 +72,10 @@ public class RecorderImpl implements Recorder {
 	public void replay() {
 		if (!recording) {
 			replaying = true;
-			for (MyPairImpl<CommandOriginator, Optional<Memento>> pair : savedStates) {
+			for (MyPairImpl<CommandOriginator, Memento> pair : savedStates) {
 				CommandOriginator cmd = pair.getKey();
-				Optional<Memento> m = pair.getValue();
-				if (m.isPresent())
-					cmd.setMemento(m.get());
+				Memento stateToRestore = pair.getValue();
+				cmd.setMemento(stateToRestore);
 				cmd.execute();
 				// System.out.println(pair);
 			}

@@ -1,7 +1,5 @@
 package fr.istic.aco.editor;
 
-import java.util.Optional;
-
 import fr.istic.aco.editor.memento.EditorMemento;
 import fr.istic.aco.editor.memento.Memento;
 import fr.istic.aco.editor.util.MyPairImpl;
@@ -23,9 +21,9 @@ public class EngineImpl implements EngineOriginator {
 	 * Initializes a newly created engine object.
 	 */
 	public EngineImpl() {
-		this.buffer = new StringBuilder();
-		this.clipboard = "";
-		this.selection = new SelectionImpl(buffer);
+		buffer = new StringBuilder();
+		clipboard = "";
+		selection = new SelectionImpl(buffer);
 	}
 
 	/**
@@ -33,7 +31,7 @@ public class EngineImpl implements EngineOriginator {
 	 */
 	@Override
 	public Selection getSelection() {
-		return this.selection;
+		return selection;
 	}
 
 	/**
@@ -41,7 +39,7 @@ public class EngineImpl implements EngineOriginator {
 	 */
 	@Override
 	public String getBufferContents() {
-		return this.buffer.toString();
+		return buffer.toString();
 	}
 
 	/**
@@ -49,7 +47,7 @@ public class EngineImpl implements EngineOriginator {
 	 */
 	@Override
 	public String getClipboardContents() {
-		return this.clipboard;
+		return clipboard;
 	}
 
 	/**
@@ -57,8 +55,8 @@ public class EngineImpl implements EngineOriginator {
 	 */
 	@Override
 	public void cutSelectedText() {
-		this.copySelectedText();
-		this.delete();
+		copySelectedText();
+		delete();
 	}
 
 	/**
@@ -66,8 +64,7 @@ public class EngineImpl implements EngineOriginator {
 	 */
 	@Override
 	public void copySelectedText() {
-		Selection currentSelection = getSelection();
-		this.clipboard = buffer.substring(currentSelection.getBeginIndex(), currentSelection.getEndIndex());
+		clipboard = buffer.substring(selection.getBeginIndex(), selection.getEndIndex());
 	}
 
 	/**
@@ -75,7 +72,7 @@ public class EngineImpl implements EngineOriginator {
 	 */
 	@Override
 	public void pasteClipboard() {
-		this.insert(this.clipboard);
+		insert(clipboard);
 	}
 
 	/**
@@ -83,13 +80,9 @@ public class EngineImpl implements EngineOriginator {
 	 */
 	@Override
 	public void insert(String s) {
-
-		Selection currentSelection = getSelection();
-
-		this.buffer.replace(currentSelection.getBeginIndex(), currentSelection.getEndIndex(), s);
-
-		currentSelection.setEndIndex(currentSelection.getBeginIndex() + s.length());
-		currentSelection.setBeginIndex(currentSelection.getEndIndex());
+		buffer.replace(selection.getBeginIndex(), selection.getEndIndex(), s);
+		selection.setEndIndex(selection.getBeginIndex() + s.length());
+		selection.setBeginIndex(selection.getEndIndex());
 	}
 
 	/**
@@ -97,20 +90,17 @@ public class EngineImpl implements EngineOriginator {
 	 */
 	@Override
 	public void delete() {
-
-		Selection currentSelection = getSelection();
-
-		this.buffer.delete(currentSelection.getBeginIndex(), currentSelection.getEndIndex());
-		currentSelection.setEndIndex(currentSelection.getBeginIndex());
+		buffer.delete(selection.getBeginIndex(), selection.getEndIndex());
+		selection.setEndIndex(selection.getBeginIndex());
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Optional<Memento> getMemento() {
-		return Optional.ofNullable(new EditorMemento(
-				new MyPairImpl<>(selection.getBeginIndex(), selection.getEndIndex()), getBufferContents()));
+	public Memento getMemento() {
+		return new EditorMemento(new MyPairImpl<>(selection.getBeginIndex(), selection.getEndIndex()),
+				getBufferContents());
 	}
 
 	/**
@@ -118,9 +108,12 @@ public class EngineImpl implements EngineOriginator {
 	 */
 	@Override
 	public void setMemento(Memento m) {
-		EditorMemento e = (EditorMemento) m;
-		selection.setBeginIndex(e.getBeginIndex());
-		selection.setEndIndex(e.getEndIndex());
-		this.buffer = new StringBuilder(e.getBufferContent());
+
+		EditorMemento stateToRestore = (EditorMemento) m;
+
+		buffer.replace(0, selection.getBufferEndIndex(), stateToRestore.getBufferContent());
+
+		selection.setBeginIndex(stateToRestore.getBeginIndex());
+		selection.setEndIndex(stateToRestore.getEndIndex());
 	}
 }

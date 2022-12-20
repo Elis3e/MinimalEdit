@@ -48,7 +48,8 @@ public class UserInterfaceImpl implements UserInterface {
 	@Override
 	public void executeCommand(String command) {
 		Command cmdToExecute = commands.get(Objects.requireNonNull(command));
-		cmdToExecute.execute();
+		if (cmdToExecute != null)
+			cmdToExecute.execute();
 	}
 
 	/**

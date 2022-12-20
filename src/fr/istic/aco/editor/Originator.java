@@ -1,11 +1,9 @@
 package fr.istic.aco.editor;
 
-import java.util.Optional;
-
 import fr.istic.aco.editor.memento.Memento;
 
 /**
- * Common interface for Concrete originators
+ * Common interface for concrete originators.
  * 
  * @version 2.0
  */
@@ -17,7 +15,7 @@ public interface Originator {
 	 * @return a Memento object that stores the originator current internal state if
 	 *         exists.
 	 */
-	Optional<Memento> getMemento();
+	Memento getMemento();
 
 	/**
 	 * Restore to a previous state (if exists) from a memento object.

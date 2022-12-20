@@ -1,7 +1,5 @@
 package fr.istic.aco.editor.command;
 
-import java.util.Optional;
-
 import fr.istic.aco.editor.Engine;
 import fr.istic.aco.editor.Selection;
 import fr.istic.aco.editor.memento.Memento;
@@ -55,12 +53,22 @@ public class SelectionChange implements CommandOriginator {
 		recorder.save(this);
 	}
 
+	/**
+	 * Save the selection to a memento object.
+	 * 
+	 * @return a memento object that store the selection
+	 */
 	@Override
-	public Optional<Memento> getMemento() {
+	public Memento getMemento() {
 		MyPairImpl<Integer, Integer> selection = new MyPairImpl<>(beginIndex, endIndex);
-		return Optional.ofNullable(new SelectionChangeMemento(selection));
+		return new SelectionChangeMemento(selection);
 	}
 
+	/**
+	 * Restore the selection from a memento object.
+	 * 
+	 * @param m a Memento object.
+	 */
 	@Override
 	public void setMemento(Memento m) {
 		beginIndex = ((SelectionChangeMemento) m).getBeginIndex();

@@ -1,8 +1,7 @@
 package fr.istic.aco.editor.command;
 
-import java.util.Optional;
-
 import fr.istic.aco.editor.Engine;
+import fr.istic.aco.editor.memento.EmptyMemento;
 import fr.istic.aco.editor.memento.Memento;
 import fr.istic.aco.editor.recorder.Recorder;
 
@@ -37,15 +36,17 @@ public class CopySelectedText implements CommandOriginator {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Theres's no state to save.
+	 * 
+	 * @return an empty memento
 	 */
 	@Override
-	public Optional<Memento> getMemento() {
-		return Optional.empty();
+	public Memento getMemento() {
+		return new EmptyMemento();
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Do nothing.
 	 */
 	@Override
 	public void setMemento(Memento m) {

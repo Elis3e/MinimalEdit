@@ -1,11 +1,10 @@
 package fr.istic.aco.editor.command;
 
-import java.util.Optional;
-
 import fr.istic.aco.editor.Engine;
 import fr.istic.aco.editor.memento.InsertMemento;
 import fr.istic.aco.editor.memento.Memento;
 import fr.istic.aco.editor.recorder.*;
+import fr.istic.aco.editor.undomanager.UndoManager;
 import fr.istic.aco.editor.userinterface.UserInterface;
 
 /**
@@ -17,6 +16,7 @@ public class Insert implements CommandOriginator {
 	private Engine engine;
 	private UserInterface userInterface;
 	private Recorder recorder;
+	private UndoManager undoManager;
 
 	/**
 	 * Creates a concrete command CutSelectedText command with specified receiver,
@@ -25,11 +25,13 @@ public class Insert implements CommandOriginator {
 	 * @param userInterface the invoker of this concrete command
 	 * @param engine        the receiver of this concrete command
 	 * @param recorder      the recorder of this concrete command
+	 * @param undoManager   the engine recorder
 	 */
-	public Insert(Engine engine, UserInterface userInterface, Recorder recorder) {
+	public Insert(Engine engine, UserInterface userInterface, Recorder recorder, UndoManager undoManager) {
 		this.engine = engine;
 		this.userInterface = userInterface;
 		this.recorder = recorder;
+		this.undoManager = undoManager;
 	}
 
 	/**
@@ -37,23 +39,28 @@ public class Insert implements CommandOriginator {
 	 */
 	@Override
 	public void execute() {
-		// invoker = user interface
+		// user interface is the invoker
 		if (!((RecorderImpl) recorder).isReplaying())
 			text = userInterface.getText();
 		engine.insert(text);
 		recorder.save(this);
+		undoManager.store();
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Save the text to insert to a memento object.
+	 * 
+	 * @return a memento object that stores the text to insert
 	 */
 	@Override
-	public Optional<Memento> getMemento() {
-		return Optional.ofNullable(new InsertMemento(text));
+	public Memento getMemento() {
+		return new InsertMemento(text);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Restore the text from a memento object.
+	 * 
+	 * @param m a Memento object.
 	 */
 	@Override
 	public void setMemento(Memento m) {

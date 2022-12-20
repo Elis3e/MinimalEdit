@@ -1,6 +1,13 @@
 fr.istic.aco.editor
+<<<<<<< HEAD
+fr.istic.aco.editor.command
+fr.istic.aco.editor.memento
+fr.istic.aco.editor.recorder
+fr.istic.aco.editor.undomanager
+=======
 fr.istic.aco.editor.commandoriginator
 fr.istic.aco.editor.memento
 fr.istic.aco.editor.recorder
+>>>>>>> branch 'master' of https://gitlab.istic.univ-rennes1.fr/17009059/editor.git
 fr.istic.aco.editor.userinterface
 fr.istic.aco.editor.util

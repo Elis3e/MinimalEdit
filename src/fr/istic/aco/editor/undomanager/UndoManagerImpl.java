@@ -2,55 +2,67 @@ package fr.istic.aco.editor.undomanager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import fr.istic.aco.editor.EngineImpl;
-import fr.istic.aco.editor.command.Command;
-import fr.istic.aco.editor.command.CommandOriginator;
-import fr.istic.aco.editor.memento.Memento;
+import fr.istic.aco.editor.EngineOriginator;
 import fr.istic.aco.editor.memento.EditorMemento;
-import fr.istic.aco.editor.util.MyPairImpl;
 
+/**
+ * Implementation of the text editor state recorder.
+ */
 public class UndoManagerImpl implements UndoManager {
 
 	private List<EditorMemento> pastStates;
 	private List<EditorMemento> futurStates;
-	private List<MyPairImpl<Command, Optional<Memento>>> pastCommands;
-	private List<MyPairImpl<Command, Optional<Memento>>> futurCommands;
 
-	private EngineImpl engine;
+	private EngineOriginator engine;
 
-	private final int K = 5;
-
-	public UndoManagerImpl(EngineImpl engine) {
+	/**
+	 * Creates an recorder with the text editor initial state.
+	 * 
+	 * @param engine the mini text editor engine.
+	 */
+	public UndoManagerImpl(EngineOriginator engine) {
 		this.engine = engine;
 		pastStates = new ArrayList<>();
 		futurStates = new ArrayList<>();
-		pastCommands = new ArrayList<>();
-		futurCommands = new ArrayList<>();
+		store();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void store(Memento m) {
-
+	public void store() {
+		EditorMemento stateToSave = (EditorMemento) engine.getMemento();
+		pastStates.add(stateToSave);
 	}
 
-	@Override
-	public void store(MyPairImpl<CommandOriginator, Optional<Memento>> m) {
-		// TODO
-
-	}
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void undo() {
-		// TODO
-
+		if (pastStates.size() > 1) {
+			EditorMemento lastState = pastStates.get(pastStates.size() - 2);
+			EditorMemento currentState = pastStates.get(pastStates.size() - 1);
+			engine.setMemento(lastState);
+			pastStates.remove(currentState);
+			futurStates.add(currentState);
+		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void redo() {
-		// TODO
+		if (!futurStates.isEmpty()) {
+			EditorMemento state = futurStates.get(futurStates.size() - 1);
+			engine.setMemento(state);
 
+			pastStates.add(state);
+			futurStates.remove(state);
+		}
 	}
 
 }
