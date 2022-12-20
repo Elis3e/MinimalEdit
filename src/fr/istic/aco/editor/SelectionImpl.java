@@ -1,61 +1,81 @@
 package fr.istic.aco.editor;
 
+/**
+ * Implements all selection control operations.
+ * 
+ * @version 1.0
+ */
 public class SelectionImpl implements Selection {
 
-	private static final Integer BUFFER_BEGIN_INDEX = 0;
+	private final Integer BUFFER_BEGIN_INDEX = 0;
 
-	private StringBuilder buffer;
 	private Integer beginIndex;
 	private Integer endIndex;
 
+	private StringBuilder buffer;
+
+	/**
+	 * Constructs a selection object with the specified buffer.
+	 * 
+	 * @param buffer the buffer on which selection operations will be performed
+	 */
 	public SelectionImpl(StringBuilder buffer) {
 		this.buffer = buffer;
 		this.beginIndex = BUFFER_BEGIN_INDEX;
 		this.endIndex = BUFFER_BEGIN_INDEX;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getBeginIndex() {
 		return this.beginIndex;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getEndIndex() {
 		return this.endIndex;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getBufferBeginIndex() {
 		return BUFFER_BEGIN_INDEX;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getBufferEndIndex() {
 		return buffer.length();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void setBeginIndex(int beginIndex) {
+	public void setBeginIndex(int newBeginIndex) {
 		if (beginIndex < BUFFER_BEGIN_INDEX || beginIndex > getBufferEndIndex())
 			throw new IndexOutOfBoundsException();
-		if (beginIndex > this.endIndex) {
-			this.beginIndex = this.endIndex;
-			this.endIndex = beginIndex;
-		} else {
-			this.beginIndex = beginIndex;
-		}
+		this.beginIndex = newBeginIndex;
+
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void setEndIndex(int endIndex) {
+	public void setEndIndex(int newEndIndex) {
 		if (endIndex > getBufferEndIndex() || endIndex < BUFFER_BEGIN_INDEX)
 			throw new IndexOutOfBoundsException();
-		if (endIndex < this.beginIndex) {
-			this.endIndex = this.beginIndex;
-			this.beginIndex = endIndex;
-		} else {
-			this.endIndex = endIndex;
-		}
+		this.endIndex = newEndIndex;
 	}
 
 }

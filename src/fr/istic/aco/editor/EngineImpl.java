@@ -1,6 +1,17 @@
 package fr.istic.aco.editor;
 
-public class EngineImpl implements Engine {
+import java.util.Optional;
+
+import fr.istic.aco.editor.memento.EditorMemento;
+import fr.istic.aco.editor.memento.Memento;
+import fr.istic.aco.editor.util.MyPairImpl;
+
+/**
+ * Implementation of the text editing engine.
+ * 
+ * @version 1.0
+ */
+public class EngineImpl implements EngineOriginator {
 
 	private StringBuilder buffer;
 
@@ -8,6 +19,9 @@ public class EngineImpl implements Engine {
 
 	private String clipboard;
 
+	/**
+	 * Initializes a newly created engine object.
+	 */
 	public EngineImpl() {
 		this.buffer = new StringBuilder();
 		this.clipboard = "";
@@ -15,9 +29,7 @@ public class EngineImpl implements Engine {
 	}
 
 	/**
-	 * Provides access to the selection control object
-	 *
-	 * @return the selection object
+	 * {@inheritDoc}
 	 */
 	@Override
 	public Selection getSelection() {
@@ -25,9 +37,7 @@ public class EngineImpl implements Engine {
 	}
 
 	/**
-	 * Provides the whole contents of the buffer, as a string
-	 *
-	 * @return a copy of the buffer's contents
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String getBufferContents() {
@@ -35,9 +45,7 @@ public class EngineImpl implements Engine {
 	}
 
 	/**
-	 * Provides the clipboard contents
-	 *
-	 * @return a copy of the clipboard's contents
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String getClipboardContents() {
@@ -45,30 +53,25 @@ public class EngineImpl implements Engine {
 	}
 
 	/**
-	 * Removes the text within the interval specified by the selection control
-	 * object, from the buffer.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void cutSelectedText() {
 		this.copySelectedText();
 		this.delete();
-		Selection currentSelection = this.getSelection();
-		currentSelection.setEndIndex(currentSelection.getBeginIndex());
 	}
 
 	/**
-	 * Copies the text within the interval specified by the selection control object
-	 * into the clipboard.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void copySelectedText() {
 		Selection currentSelection = getSelection();
-		clipboard = buffer.substring(currentSelection.getBeginIndex(), currentSelection.getEndIndex());
+		this.clipboard = buffer.substring(currentSelection.getBeginIndex(), currentSelection.getEndIndex());
 	}
 
 	/**
-	 * Replaces the text within the interval specified by the selection object with
-	 * the contents of the clipboard.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void pasteClipboard() {
@@ -76,26 +79,48 @@ public class EngineImpl implements Engine {
 	}
 
 	/**
-	 * Inserts a string in the buffer, which replaces the contents of the selection
-	 *
-	 * @param s the text to insert
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void insert(String s) {
-		if (s != null) {
-			Selection currentSelection = getSelection();
-			this.buffer.replace(currentSelection.getBeginIndex(), currentSelection.getEndIndex(), s);
-			currentSelection.setEndIndex(currentSelection.getBeginIndex() + s.length());
-			currentSelection.setBeginIndex(currentSelection.getEndIndex());
-		}
+
+		Selection currentSelection = getSelection();
+
+		this.buffer.replace(currentSelection.getBeginIndex(), currentSelection.getEndIndex(), s);
+
+		currentSelection.setEndIndex(currentSelection.getBeginIndex() + s.length());
+		currentSelection.setBeginIndex(currentSelection.getEndIndex());
 	}
 
 	/**
-	 * Removes the contents of the selection in the buffer
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void delete() {
+
 		Selection currentSelection = getSelection();
+
 		this.buffer.delete(currentSelection.getBeginIndex(), currentSelection.getEndIndex());
+		currentSelection.setEndIndex(currentSelection.getBeginIndex());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Optional<Memento> getMemento() {
+		return Optional.ofNullable(new EditorMemento(
+				new MyPairImpl<>(selection.getBeginIndex(), selection.getEndIndex()), getBufferContents()));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setMemento(Memento m) {
+		EditorMemento e = (EditorMemento) m;
+		selection.setBeginIndex(e.getBeginIndex());
+		selection.setEndIndex(e.getEndIndex());
+		this.buffer = new StringBuilder(e.getBufferContent());
 	}
 }
