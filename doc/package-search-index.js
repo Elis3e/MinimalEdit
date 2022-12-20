@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"fr.istic.aco.editor"},{"l":"fr.istic.aco.editor.commandoriginator"},{"l":"fr.istic.aco.editor.memento"},{"l":"fr.istic.aco.editor.recorder"},{"l":"fr.istic.aco.editor.userinterface"}];updateSearchResults();
