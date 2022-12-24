@@ -1,5 +1,5 @@
 unit_test:
-  stage: test
+  stage: unit_test
   script:
     - ./gradlew :test --tests "fr.slickteam.gitlabciittests.**Test"
   allow_failure: true
@@ -15,7 +15,7 @@ unit_test:
 
 
 IT_test:
-  stage: test
+  stage: IT_test
   # dependency to unit_test to get artifact from this step
   dependencies:
     - unit_test
