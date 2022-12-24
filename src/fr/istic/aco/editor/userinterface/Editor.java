@@ -47,9 +47,9 @@ public class Editor {
 		userInterface.addCommand(Command.DELETE, new Delete(engine, recorder, undoManager));
 
 		// Recorder commands
-		userInterface.addCommand(Command.START, () -> recorder.start());
-		userInterface.addCommand(Command.STOP, () -> recorder.stop());
-		userInterface.addCommand(Command.REPLAY, () -> recorder.replay());
+//		userInterface.addCommand(Command.START, () -> recorder.start());
+//		userInterface.addCommand(Command.STOP, () -> recorder.stop());
+//		userInterface.addCommand(Command.REPLAY, () -> recorder.replay());
 
 		// UndoManager commands
 		userInterface.addCommand(Command.UNDO, () -> undoManager.undo());

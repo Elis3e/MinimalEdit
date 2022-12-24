@@ -36,9 +36,9 @@ public class Delete implements CommandOriginator {
 	 */
 	@Override
 	public void execute() {
+		undoManager.store();
 		engine.delete();
 		recorder.save(this);
-		undoManager.store();
 	}
 
 	/**

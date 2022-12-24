@@ -40,11 +40,11 @@ public class Insert implements CommandOriginator {
 	@Override
 	public void execute() {
 		// user interface is the invoker
+		undoManager.store();
 		if (!((RecorderImpl) recorder).isReplaying())
 			text = userInterface.getText();
 		engine.insert(text);
 		recorder.save(this);
-		undoManager.store();
 	}
 
 	/**

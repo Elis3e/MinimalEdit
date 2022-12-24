@@ -8,6 +8,7 @@ import fr.istic.aco.editor.command.*;
 import fr.istic.aco.editor.recorder.Recorder;
 import fr.istic.aco.editor.recorder.RecorderImpl;
 import fr.istic.aco.editor.undomanager.UndoManager;
+import fr.istic.aco.editor.undomanager.UndoManagerImpl;
 import fr.istic.aco.editor.userinterface.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -20,7 +21,7 @@ public class CommandTest {
 
 	private UserInterface editor;
 
-	private Engine engine;
+	private EngineOriginator engine;
 
 	private Recorder recorder;
 
@@ -38,6 +39,7 @@ public class CommandTest {
 		engine = new EngineImpl();
 		editor = new UserInterfaceImpl();
 		recorder = new RecorderImpl();
+		undoManager = new UndoManagerImpl(engine);
 
 		editor.addCommand(Command.INSERT, new Insert(engine, editor, recorder, undoManager));
 		editor.addCommand(Command.SELECT, new SelectionChange(engine, editor, recorder));

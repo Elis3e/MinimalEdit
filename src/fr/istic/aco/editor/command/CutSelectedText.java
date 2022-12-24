@@ -36,9 +36,9 @@ public class CutSelectedText implements CommandOriginator {
 	 */
 	@Override
 	public void execute() {
+		undoManager.store();
 		engine.cutSelectedText();
 		recorder.save(this);
-		undoManager.store();
 	}
 
 	/**

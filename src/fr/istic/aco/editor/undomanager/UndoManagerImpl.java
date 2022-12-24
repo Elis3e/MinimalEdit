@@ -25,7 +25,6 @@ public class UndoManagerImpl implements UndoManager {
 		this.engine = engine;
 		pastStates = new ArrayList<>();
 		futurStates = new ArrayList<>();
-		store();
 	}
 
 	/**
@@ -35,6 +34,7 @@ public class UndoManagerImpl implements UndoManager {
 	public void store() {
 		EditorMemento stateToSave = (EditorMemento) engine.getMemento();
 		pastStates.add(stateToSave);
+		futurStates.clear();
 	}
 
 	/**
@@ -42,12 +42,12 @@ public class UndoManagerImpl implements UndoManager {
 	 */
 	@Override
 	public void undo() {
-		if (pastStates.size() > 1) {
-			EditorMemento lastState = pastStates.get(pastStates.size() - 2);
-			EditorMemento currentState = pastStates.get(pastStates.size() - 1);
-			engine.setMemento(lastState);
-			pastStates.remove(currentState);
+		if (!pastStates.isEmpty()) {
+			EditorMemento currentState = (EditorMemento) engine.getMemento();
+			EditorMemento lastState = pastStates.get(pastStates.size() - 1);
 			futurStates.add(currentState);
+			engine.setMemento(lastState);
+			pastStates.remove(lastState);
 		}
 	}
 
@@ -57,11 +57,11 @@ public class UndoManagerImpl implements UndoManager {
 	@Override
 	public void redo() {
 		if (!futurStates.isEmpty()) {
-			EditorMemento state = futurStates.get(futurStates.size() - 1);
-			engine.setMemento(state);
-
-			pastStates.add(state);
-			futurStates.remove(state);
+			EditorMemento currentState = (EditorMemento) engine.getMemento();
+			EditorMemento nextState = futurStates.get(futurStates.size() - 1);
+			pastStates.add(currentState);
+			engine.setMemento(nextState);
+			futurStates.remove(nextState);
 		}
 	}
 
