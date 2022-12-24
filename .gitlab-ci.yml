@@ -20,7 +20,7 @@ IT_test:
   dependencies:
     - unit_test
   services:
-    - name: YOUR_REPO/gitlabciittests-mongo-testing:latest
+    - name: Editor/gitlabciittests-mongo-testing:latest
       alias: mongo
   script:
     - mv build/jacoco/test.exec build/jacoco/unittest.exec
