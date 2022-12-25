@@ -16,7 +16,7 @@ coverage-jdk11:
   script:
     # convert report from jacoco to cobertura, using relative project path
     - python /opt/cover2cover.py build/jacoco/jacoco.xml $CI_PROJECT_DIR/src/main/java/ > build/cobertura.xml
-  needs: ["test-jdk11"]
+  needs: ["test"]
   artifacts:
     reports:
       coverage_report:
