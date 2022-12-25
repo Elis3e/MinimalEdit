@@ -1,40 +1,24 @@
-unit_test:
+test-jdk11:
   stage: test
+  image: gradle:6.6.1-jdk11
   script:
-    - ./gradlew :test --tests "fr.slickteam.gitlabciittests.**Test"
-  allow_failure: true
+    - 'gradle test jacocoTestReport' # jacoco must be configured to create an xml report
   artifacts:
-    when: always
     paths:
-      - build/jacocoHtml
-      - build/reports
-      - build/jacoco/test.exec
-    expire_in: 60 days
-    reports:
-      junit: build/test-results/test/TEST-*.xml
+      - build/jacoco/jacoco.xml
 
-
-IT_test:
-  stage: test
-  # dependency to unit_test to get artifact from this step
-  dependencies:
-    - unit_test
-  services:
-    - name: Editor/gitlabciittests-mongo-testing:latest
-      alias: mongo
+coverage-jdk11:
+  # Must be in a stage later than test-jdk11's stage.
+  # The `visualize` stage does not exist by default.
+  # Please define it first, or chose an existing stage like `deploy`.
+  stage: visualize
+  image: registry.gitlab.com/haynes/jacoco2cobertura:1.0.7
   script:
-    - mv build/jacoco/test.exec build/jacoco/unittest.exec
-    - mv build/reports/jacoco.xml build/reports/unit_jacoco.xml
-    - ./gradlew :test --tests "fr.slickteam.gitlabciittests.**TestIT"
-    - cat build/jacocoHtml/index.html | grep -o 'Total[^%]*%'
-  allow_failure: true
-  timeout: 10m
+    # convert report from jacoco to cobertura, using relative project path
+    - python /opt/cover2cover.py build/jacoco/jacoco.xml $CI_PROJECT_DIR/src/main/java/ > build/cobertura.xml
+  needs: ["test-jdk11"]
   artifacts:
-    when: always
-    paths:
-      - build/jacocoHtml
-      - build/reports
-      - build/jacoco/*.exec
-    expire_in: 60 days
     reports:
-      junit: build/test-results/test/TEST-*.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: build/cobertura.xml
